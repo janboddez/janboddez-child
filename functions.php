@@ -1,5 +1,31 @@
 <?php
 
+add_filter( 'pre_get_posts', function( $query ) {
+	if ( is_admin() ) {
+		return $query;
+	}
+
+	if ( ! $query->is_main_query() ) {
+		return $query;
+	}
+
+	if ( ! empty( $query->query_vars['suppress_filters'] ) ) {
+		return $query;
+	}
+
+	if ( ! $query->is_main_query() ) {
+		return $query;
+	}
+
+	$rss_club = get_category_by_slug( 'rss-club' );
+	if ( empty( $rss_club->term_id ) || is_category( $rss_club->term_id ) ) {
+		return $query;
+	}
+
+	$query->set( 'category__not_in', array( $rss_club->term_id ) );
+	return $query;
+} );
+
 add_action( 'after_setup_theme', function() {
 	// Deregister WP core's `core/social-icon` block.
 	add_action( 'init', function() {
