@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Load `highlight.js`.
+ */
+add_action( 'wp_enqueue_scripts', function() {
+	wp_register_script( 'hljs', get_stylesheet_directory_uri() . '/assets/js/highlight.min.js', array(), '11.7.0', true );
+
+	wp_enqueue_style( 'highlight', get_stylesheet_directory_uri() . '/assets/css/highlight.css' );
+	wp_enqueue_script( 'highlight-js', get_stylesheet_directory_uri() . '/assets/js/highlight.js', array( 'hljs' ), false, true );
+} );
+
+/**
+ * Adds "RSS-only" post support.
+ */
 add_filter( 'pre_get_posts', function( $query ) {
 	if ( is_admin() ) {
 		return $query;
@@ -26,6 +39,9 @@ add_filter( 'pre_get_posts', function( $query ) {
 	return $query;
 } );
 
+/**
+ * Replaces front-end social icons with our own.
+ */
 add_action( 'after_setup_theme', function() {
 	// Deregister WP core's `core/social-icon` block.
 	add_action( 'init', function() {
